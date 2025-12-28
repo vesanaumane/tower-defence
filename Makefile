@@ -12,7 +12,8 @@ INCLUDES = -ILogging
 SRCS = \
 	main.cpp \
 	Logging/logger_base.cpp \
-	Logging/console_logger.cpp
+	Logging/console_logger.cpp \
+	Logging/multi_logger.cpp
 
 # Convert src paths to obj paths
 OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)

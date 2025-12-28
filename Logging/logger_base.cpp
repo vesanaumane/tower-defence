@@ -8,6 +8,12 @@ using namespace Logging;
 
 
 
+Logging::LoggerBase::LoggerBase()
+{
+    // Set max log level to verbose.
+    m_max_level = LogLevel::Verbose;
+}
+
 Logging::LoggerBase::LoggerBase( LogLevel maximum_log_level )
 {
     m_max_level = maximum_log_level;

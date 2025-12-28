@@ -1,14 +1,18 @@
 #include "Logging/console_logger.hpp"
+#include "Logging/multi_logger.hpp"
 
 #include <SFML/Graphics.hpp>
 
 int main()
 {
+    // Create a new console logger.
+    Logging::ILogger* console_logger = new Logging::ConsoleLogger( Logging::LogLevel::Info );
 
-    // Create a new logger.
-    Logging::ILogger* logger = new Logging::ConsoleLogger( Logging::LogLevel::Info );
+    // Create a new multi logger with the console logger.
+    Logging::MultiLogger* multi_logger = new Logging::MultiLogger();
+    multi_logger->add( console_logger );
 
-    logger->logInfo( "First message" );
+    multi_logger->logInfo( "First message" );
 
     sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );
     sf::CircleShape shape( 100.f );
@@ -28,9 +32,9 @@ int main()
         window.display();
     }
 
-    logger->logInfo( "Other message" );
+    multi_logger->logInfo( "Other message" );
 
-    delete logger;
+    delete multi_logger;
 
     return 0;
 }
