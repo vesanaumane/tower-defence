@@ -7,13 +7,13 @@ namespace Logging
     class ConsoleLogger : public LoggerBase
     {
         public:
-        ConsoleLogger();
+        ConsoleLogger( LogLevel maximum_log_level );
 
-        void LogInfo( std::string message );
-        void LogWarning( std::string message );
-        void LogError( std::string message );
-        void LogDebug( std::string message );
-        void LogVerbose( std::string message );
+        void logError( std::string message, bool no_prefix );
+        void logWarning( std::string message, bool no_prefix );
+        void logInfo( std::string message, bool no_prefix );
+        void logDebug( std::string message, bool no_prefix );
+        void logVerbose( std::string message, bool no_prefix );
 
         ~ConsoleLogger();
     };

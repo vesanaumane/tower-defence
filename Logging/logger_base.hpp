@@ -8,11 +8,13 @@ namespace Logging
     {
         public:
 
-        virtual void LogInfo( std::string message ) = 0;
-        virtual void LogWarning( std::string message ) = 0;
-        virtual void LogError( std::string message ) = 0;
-        virtual void LogDebug( std::string message ) = 0;
-        virtual void LogVerbose( std::string message ) = 0;
+        LoggerBase( LogLevel maximum_log_level );
+
+        virtual void logInfo( std::string message, bool no_prefix ) = 0;
+        virtual void logWarning( std::string message, bool no_prefix ) = 0;
+        virtual void logError( std::string message, bool no_prefix ) = 0;
+        virtual void logDebug( std::string message, bool no_prefix ) = 0;
+        virtual void logVerbose( std::string message, bool no_prefix ) = 0;
 
         virtual ~LoggerBase();
 
@@ -21,6 +23,14 @@ namespace Logging
         /// @brief Prefix log message with timestamp and log level information.
         /// @param level Logging level.
         /// @param message Message to which the prefix is added to.
-        void PrefixMessage( LogLevel level, std::string& message );
+        void prefixMessage( LogLevel level, std::string& message );
+
+        /// @brief Should the message be logged or not based on the log level.
+        /// @return true if the message should be logged.
+        bool shouldLog( LogLevel log_level );
+
+        private:
+
+        LogLevel m_max_level;
     };
 } // namespace Logging

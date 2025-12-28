@@ -8,12 +8,17 @@ using namespace Logging;
 
 
 
+Logging::LoggerBase::LoggerBase( LogLevel maximum_log_level )
+{
+    m_max_level = maximum_log_level;
+}
+
 LoggerBase::~LoggerBase()
 {
     // Nothing to do here.
 }
 
-void LoggerBase::PrefixMessage( LogLevel level, std::string& message )
+void LoggerBase::prefixMessage( LogLevel level, std::string& message )
 {
     // Get current time.
     auto now = std::chrono::system_clock::now();
@@ -67,4 +72,9 @@ void LoggerBase::PrefixMessage( LogLevel level, std::string& message )
 
     // Add the prefix to the message.
     message = message_prefix.str().append( message );
+}
+
+bool LoggerBase::shouldLog( LogLevel log_level )
+{
+    return log_level <= m_max_level;
 }

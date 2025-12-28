@@ -3,51 +3,57 @@
 
 using namespace Logging;
 
-ConsoleLogger::ConsoleLogger()
+ConsoleLogger::ConsoleLogger( LogLevel maximum_log_level )
+    : LoggerBase( maximum_log_level )
 {
     // Nothing to do here.
 }
 
-void ConsoleLogger::LogInfo( std::string message )
+void ConsoleLogger::logError( std::string message, bool no_prefix )
 {
     // Add prefix to the message.
-    PrefixMessage( LogLevel::Info, message );
+    if( no_prefix == false )
+        prefixMessage( LogLevel::Error, message );
 
     // Print to standard stream.
     std::cout << message << std::endl;
 }
 
-void ConsoleLogger::LogWarning( std::string message )
+void ConsoleLogger::logWarning( std::string message, bool no_prefix )
 {
     // Add prefix to the message.
-    PrefixMessage( LogLevel::Warning, message );
+    if( no_prefix == false )
+        prefixMessage( LogLevel::Warning, message );
 
     // Print to standard stream.
     std::cout << message << std::endl;
 }
 
-void ConsoleLogger::LogError( std::string message )
+void ConsoleLogger::logInfo( std::string message, bool no_prefix )
 {
     // Add prefix to the message.
-    PrefixMessage( LogLevel::Error, message );
+    if( no_prefix == false )
+        prefixMessage( LogLevel::Info, message );
 
     // Print to standard stream.
     std::cout << message << std::endl;
 }
 
-void ConsoleLogger::LogDebug( std::string message )
+void ConsoleLogger::logDebug( std::string message, bool no_prefix )
 {
     // Add prefix to the message.
-    PrefixMessage( LogLevel::Debug, message );
+    if( no_prefix == false )
+        prefixMessage( LogLevel::Debug, message );
 
     // Print to standard stream.
     std::cout << message << std::endl;
 }
 
-void ConsoleLogger::LogVerbose( std::string message )
+void ConsoleLogger::logVerbose( std::string message, bool no_prefix )
 {
     // Add prefix to the message.
-    PrefixMessage( LogLevel::Verbose, message );
+    if( no_prefix == false )
+        prefixMessage( LogLevel::Verbose, message );
 
     // Print to standard stream.
     std::cout << message << std::endl;

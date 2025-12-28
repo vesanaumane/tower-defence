@@ -6,9 +6,9 @@ int main()
 {
 
     // Create a new logger.
-    Logging::ILogger* logger = new Logging::ConsoleLogger();
+    Logging::ILogger* logger = new Logging::ConsoleLogger( Logging::LogLevel::Info );
 
-    logger->LogInfo( "First message" );
+    logger->logInfo( "First message" );
 
     sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );
     sf::CircleShape shape( 100.f );
@@ -28,7 +28,7 @@ int main()
         window.display();
     }
 
-    logger->LogInfo( "Other message" );
+    logger->logInfo( "Other message" );
 
     delete logger;
 

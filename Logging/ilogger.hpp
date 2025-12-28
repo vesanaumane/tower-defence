@@ -18,11 +18,30 @@ namespace Logging
     {
         public:
 
-        virtual void LogInfo( std::string message ) = 0;
-        virtual void LogWarning( std::string message ) = 0;
-        virtual void LogError( std::string message ) = 0;
-        virtual void LogDebug( std::string message ) = 0;
-        virtual void LogVerbose( std::string message ) = 0;
+        /// @brief Log error level message.
+        /// @param message Log message.
+        /// @param no_prefix Do not add prefix to the message. Prefix contains for example date and the log level.
+        virtual void logError( std::string message, bool no_prefix ) = 0;
+
+        /// @brief Log warning level message.
+        /// @param message Log message.
+        /// @param no_prefix Do not add prefix to the message. Prefix contains for example date and the log level.
+        virtual void logWarning( std::string message, bool no_prefix ) = 0;
+
+        /// @brief Log information level message.
+        /// @param message Log message.
+        /// @param no_prefix Do not add prefix to the message. Prefix contains for example date and the log level.
+        virtual void logInfo( std::string message, bool no_prefix ) = 0;
+
+        /// @brief Log debug level message.
+        /// @param message Log message.
+        /// @param no_prefix Do not add prefix to the message. Prefix contains for example date and the log level.
+        virtual void logDebug( std::string message, bool no_prefix ) = 0;
+
+        /// @brief Log verbose level message.
+        /// @param message Log message.
+        /// @param no_prefix Do not add prefix to the message. Prefix contains for example date and the log level.
+        virtual void logVerbose( std::string message, bool no_prefix ) = 0;
 
         virtual ~ILogger() {};
     };
