@@ -6,11 +6,11 @@ namespace Logging
     // Logging levels.
     enum LogLevel
     {
-        Info,
-        Debug,
-        Verbose,
-        Warning,
-        Error
+        Error = 0,
+        Warning = 1,
+        Info = 2,
+        Debug = 3,
+        Verbose = 4
     };
 
     // Interface for loggers.
