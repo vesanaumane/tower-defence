@@ -1,7 +1,15 @@
+#include "Logging/console_logger.hpp"
+
 #include <SFML/Graphics.hpp>
 
 int main()
 {
+
+    // Create a new logger.
+    Logging::ILogger* logger = new Logging::ConsoleLogger();
+
+    logger->LogInfo( "First message" );
+
     sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );
     sf::CircleShape shape( 100.f );
     shape.setFillColor( sf::Color::Green );
@@ -19,6 +27,10 @@ int main()
         window.draw( shape );
         window.display();
     }
+
+    logger->LogInfo( "Other message" );
+
+    delete logger;
 
     return 0;
 }

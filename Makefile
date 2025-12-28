@@ -4,11 +4,18 @@
 EXE_NAME = game
 OBJDIR   = obj
 CXX      = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 # Use C++/17 standard plus add more warnings.
-SFMLFLAGS  = -lsfml-graphics -lsfml-window -lsfml-system # Flags for SFML library, we need to link them to the app.
+CXXFLAGS = -std=c++17 -Wall -Wextra -Wpedantic -MMD -MP # Use C++/17 standard plus add more warnings and handle header file dependencies.
+LDLIBS  = -lsfml-graphics -lsfml-window -lsfml-system # Flags for SFML library, we need to link them to the app.
+INCLUDES = -ILogging
 
-# List of build object files.
-OBJS = $(OBJDIR)/main.o
+# All source files
+SRCS = \
+	main.cpp \
+	Logging/logger_base.cpp \
+	Logging/console_logger.cpp
+
+# Convert src paths to obj paths
+OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
 
 # Build all.
 all: $(EXE_NAME)
@@ -20,23 +27,17 @@ all: $(EXE_NAME)
 
 # Link.
 $(EXE_NAME): $(OBJS)
-	$(CXX) -o $@ $^ $(SFMLFLAGS)
+	$(CXX) -o $@ $^ $(LDLIBS)
+	
+# Pattern rule for compiling any .cpp file in OBJDIR folder.
+$(OBJDIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-# Compile main when main.cpp changes. OBJDIR must exist, but changing its timestamp does not trigger build.
-# $< is the first prequisite:
-#                    |
-# $@ is the target:  |
-#         |          |
-#  -------------  --------
-$(OBJDIR)/main.o: main.cpp | $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# Create objdir if it does not exist.
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
 
 # Clean objects and the exe.
 clean:
 	rm -rf $(OBJDIR) $(EXE_NAME)
 
 
+-include $(OBJS:.o=.d)
