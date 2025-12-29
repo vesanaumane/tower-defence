@@ -13,12 +13,6 @@ namespace Logging
         LoggerBase();
         LoggerBase( LogLevel maximum_log_level );
 
-        virtual void logInfo( std::string message, bool add_prefix = true ) = 0;
-        virtual void logWarning( std::string message, bool add_prefix = true ) = 0;
-        virtual void logError( std::string message, bool add_prefix = true ) = 0;
-        virtual void logDebug( std::string message, bool add_prefix = true ) = 0;
-        virtual void logVerbose( std::string message, bool add_prefix = true ) = 0;
-
         virtual ~LoggerBase();
 
         protected:

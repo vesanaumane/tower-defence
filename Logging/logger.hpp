@@ -58,5 +58,15 @@ namespace Logging
 
         /// @brief Method for the m_buffer_processor.
         void processBuffer();
+
+        /// @brief Log message.
+        /// @param level Log level.
+        /// @param message Log message.
+        /// @param add_prefix Add prefix to the message.
+        void logMessage( LogLevel level, std::string message, bool add_prefix );
+
+        /// @brief Add message to the buffer.
+        /// @param log_method Method to log the message. 
+        void addMessageToBuffer( std::function<void()> log_method );
     };
 }

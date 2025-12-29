@@ -18,11 +18,11 @@ namespace Logging
         /// @param log A log to log to.
         void add( ILogger* log );
 
-        void logError( std::string message, bool add_prefix = true );
-        void logWarning( std::string message, bool add_prefix = true );
-        void logInfo( std::string message, bool add_prefix = true );
-        void logDebug( std::string message, bool add_prefix = true );
-        void logVerbose( std::string message, bool add_prefix = true );
+        void logError( std::string message, bool add_prefix ) override;
+        void logWarning( std::string message, bool add_prefix ) override;
+        void logInfo( std::string message, bool add_prefix ) override;
+        void logDebug( std::string message, bool add_prefix ) override;
+        void logVerbose( std::string message, bool add_prefix ) override;
 
         ~MultiLogger();
 
