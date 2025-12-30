@@ -17,6 +17,7 @@ int main()
 
     LOG_INFO( "Application starting..." );
 
+    // Run the game.
     try
     {
         sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );

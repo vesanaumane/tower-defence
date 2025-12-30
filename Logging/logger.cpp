@@ -3,6 +3,7 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <stop_token>
 #include <thread>
 #include <functional>
 #include <memory>
@@ -21,25 +22,27 @@ using namespace Logging;
 // Logger log( console_logger );
 // Then the shared pointer still has two owners, console_logger and m_target_logger.
 Logger::Logger( std::unique_ptr<ILogger> logger )
-    : m_target_logger( std::move( logger ) )
+    : m_target_logger( std::move( logger ) ),
+    m_buffer_processor(
+        [ this ] ( std::stop_token st )
+        {
+            this->processBuffer( st );
+        }
+    )
 {
-    // Create a thread that runs the processing method.
-    // "Call this->processBuffer() in a new thread."
-    // Note: 
-    // m_buffer_processor = std::thread( processBuffer );
-    // Would work, if processBuffer is static method, but then we do not have access to
-    // object members.
-    m_buffer_processor = std::thread( &Logger::processBuffer, this );
+    // Nothing to do here.
 }
 
-Logger::~Logger()
+Logger::~Logger() noexcept
 {
-    // Stop running.
-    m_running.store( false );
-    m_buffer_signal.notify_all();
+    if( m_buffer_processor.joinable() )
+    {
+        // Request stop for the thread.
+        m_buffer_processor.request_stop();
 
-    // Wait until all logs are written.
-    m_buffer_processor.join();
+        // Wake from possible wait-sleep.
+        m_buffer_signal.notify_all();
+    }
 }
 
 void Logger::logError( std::string message, bool add_prefix )
@@ -73,11 +76,8 @@ void Logger::logVerbose( std::string message, bool add_prefix )
 }
 
 
-void Logger::processBuffer()
+void Logger::processBuffer( std::stop_token stop_token )
 {
-    // The logger is now running.
-    m_running.store( true );
-
     // Run the processor until it is stopped and the queue is empty.
     while( true )
     {
@@ -94,14 +94,14 @@ void Logger::processBuffer()
             // The thread exits the wait when notify_*() is called AND the predicative is true.
             // Note: the thread does not go to sleep if predicative is true.
             // I.e. State is checked BEFORE waiting and state is checked AFTER waking.
-            m_buffer_signal.wait( lock, [ this ]
+            m_buffer_signal.wait( lock, [ this, &stop_token ]
                 {
                     // Wake up when buffer has items, or shutdown is requested.
-                    return !m_buffer.empty() || !m_running.load();
+                    return !m_buffer.empty() || !stop_token.stop_requested();
                 } );
 
             // Shutdown condition.
-            if( !m_running.load() && m_buffer.empty() )
+            if( stop_token.stop_requested() && m_buffer.empty() )
                 return;
 
             // Get the first task from the buffer.

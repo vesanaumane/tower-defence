@@ -22,7 +22,7 @@ namespace Logging
         explicit Logger( std::unique_ptr<ILogger> logger );
 
         /// @brief Destructor. Flushes the buffer and stops the processor thread.
-        virtual ~Logger();
+        virtual ~Logger() noexcept;
 
         void logError( std::string message, bool add_prefix ) override;
         void logWarning( std::string message, bool add_prefix ) override;
@@ -38,8 +38,8 @@ namespace Logging
 
         private:
 
-        /// @brief Should the logger still be running.
-        std::atomic<bool> m_running{ false };
+        /// @brief Logger that logs the messages.
+        std::unique_ptr<ILogger> m_target_logger;
 
         /// @brief Buffer for the messages.
         std::queue<std::function<void()>> m_buffer;
@@ -48,16 +48,14 @@ namespace Logging
         std::mutex m_buffer_mutex;
 
         /// @brief Condition variable used to signal processor thread that there are items in the queue.
-        std::condition_variable m_buffer_signal;
+        std::condition_variable_any m_buffer_signal;
 
         /// @brief Thread that processes the buffer, i.e. logs the messages.
-        std::thread m_buffer_processor;
+        std::jthread m_buffer_processor;
 
-        /// @brief Logger that logs the messages.
-        std::unique_ptr<ILogger> m_target_logger;
 
         /// @brief Method for the m_buffer_processor.
-        void processBuffer();
+        void processBuffer( std::stop_token stop_token );
 
         /// @brief Log message.
         /// @param level Log level.

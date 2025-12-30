@@ -1,4 +1,5 @@
-.PHONY: all clean # Mark all and clean as phony, so make does not get confused if we ever create files called all and clean.
+# Mark all and clean as phony, so make does not get confused if we ever create files called all and clean.
+.PHONY: all clean 
 
 #Variables
 EXE_NAME = game
@@ -25,8 +26,8 @@ all: $(EXE_NAME)
 
 # Automatic variables:
 # $@ → target name (game)
-# $^ → all prerequisites (obj/main.o)
-# $< → first prerequisite (main.cpp)
+# $^ → all prerequisites (obj/main.o, obj/Logging/logger.o ...)
+# $< → first prerequisite (e.g. main.cpp)
 
 # Link.
 $(EXE_NAME): $(OBJS)
@@ -42,5 +43,5 @@ $(OBJDIR)/%.o: %.cpp
 clean:
 	rm -rf $(OBJDIR) $(EXE_NAME)
 
-
+# Depency mapping stuff, related to CXXFLAGS = -MMD -MP.
 -include $(OBJS:.o=.d)
