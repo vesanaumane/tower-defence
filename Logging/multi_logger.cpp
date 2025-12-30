@@ -1,26 +1,23 @@
 #include "multi_logger.hpp"
 
+#include <memory>
+
 using namespace Logging;
 
 MultiLogger::MultiLogger()
-    : LoggerBase()
+    : LoggerBase(), m_loggers()
 {
-    // Initialize the container for loggers.
-    m_loggers = std::vector< ILogger* >();
+    // Nothing to do here.
 }
 
 MultiLogger::~MultiLogger()
 {
-    // Delete all loggers.
-    for( ILogger* logger : m_loggers )
-    {
-        delete logger;
-    }
+    // Nothing to do here.
 }
 
-void MultiLogger::add( ILogger* log )
+void MultiLogger::add( std::unique_ptr<ILogger> log )
 {
-    m_loggers.push_back( log );
+    m_loggers.push_back( std::move( log ) );
 }
 
 void MultiLogger::logError( std::string message, bool add_prefix )
@@ -56,9 +53,31 @@ void MultiLogger::logMessage( LogLevel level, std::string& message, bool add_pre
         prefixMessage( level, message );
 
     // Call all loggers.
-    for( ILogger* logger : m_loggers )
+    for( const auto& logger : m_loggers )
     {
         // Do not add prefix again to the message.
-        logger->logInfo( message, false );
+        switch( level )
+        {
+            case Error:
+                logger->logError( message, false );
+                break;
+            case Warning:
+                logger->logWarning( message, false );
+                break;
+            case Info:
+                logger->logInfo( message, false );
+                break;
+            case Debug:
+                logger->logDebug( message, false );
+                break;
+            case Verbose:
+                logger->logVerbose( message, false );
+                break;
+            default:
+                // By default log as an error message with a note that the level is unknown.
+                std::string error_message = "Unknow Logging Level [" + std::to_string( ( int )level ) + "]! " + message;
+                logger->logError( error_message, false );
+                break;
+        }
     }
 }

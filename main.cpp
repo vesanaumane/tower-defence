@@ -8,16 +8,15 @@
 int main()
 {
     // Create a new console logger.
-    Logging::ILogger* console_logger = new Logging::ConsoleLogger( Logging::LogLevel::Info );
+    auto console_logger = std::make_unique<Logging::ConsoleLogger>( Logging::LogLevel::Info );
 
     // Create a new multi logger with the console logger.
-    auto multi_logger = std::make_shared<Logging::MultiLogger>();
-    multi_logger->add( console_logger );
+    auto multi_logger = std::make_unique<Logging::MultiLogger>();
+    multi_logger->add( std::move( console_logger ) );
 
     // Create the main logger instance.
-    Logging::ILogger* logger = new Logging::Logger( multi_logger );
-
-    logger->logInfo( "First message" );
+    auto logger = std::make_unique<Logging::Logger>( std::move( multi_logger ) );
+    logger->logInfo( "First message", true );
 
     sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );
     sf::CircleShape shape( 100.f );
@@ -37,9 +36,6 @@ int main()
         window.display();
     }
 
-    logger->logInfo( "Other message" );
-
-    delete logger;
-
+    logger->logInfo( "Other message", true );
     return 0;
 }

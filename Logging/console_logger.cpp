@@ -12,7 +12,7 @@ ConsoleLogger::ConsoleLogger( LogLevel maximum_log_level )
 void ConsoleLogger::logError( std::string message, bool add_prefix )
 {
     // Add prefix to the message.
-    if( add_prefix == false )
+    if( add_prefix )
         prefixMessage( LogLevel::Error, message );
 
     // Print to standard stream.
@@ -22,7 +22,7 @@ void ConsoleLogger::logError( std::string message, bool add_prefix )
 void ConsoleLogger::logWarning( std::string message, bool add_prefix )
 {
     // Add prefix to the message.
-    if( add_prefix == false )
+    if( add_prefix )
         prefixMessage( LogLevel::Warning, message );
 
     // Print to standard stream.
@@ -32,7 +32,7 @@ void ConsoleLogger::logWarning( std::string message, bool add_prefix )
 void ConsoleLogger::logInfo( std::string message, bool add_prefix )
 {
     // Add prefix to the message.
-    if( add_prefix == false )
+    if( add_prefix )
         prefixMessage( LogLevel::Info, message );
 
     // Print to standard stream.
@@ -42,7 +42,7 @@ void ConsoleLogger::logInfo( std::string message, bool add_prefix )
 void ConsoleLogger::logDebug( std::string message, bool add_prefix )
 {
     // Add prefix to the message.
-    if( add_prefix == false )
+    if( add_prefix )
         prefixMessage( LogLevel::Debug, message );
 
     // Print to standard stream.
@@ -52,7 +52,7 @@ void ConsoleLogger::logDebug( std::string message, bool add_prefix )
 void ConsoleLogger::logVerbose( std::string message, bool add_prefix )
 {
     // Add prefix to the message.
-    if( add_prefix == false )
+    if( add_prefix )
         prefixMessage( LogLevel::Verbose, message );
 
     // Print to standard stream.

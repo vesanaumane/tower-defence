@@ -19,7 +19,7 @@ namespace Logging
 
         /// @brief Construct the logger with another logger. Disallow implicit conversions.
         /// @param logger Logger that actually logs the messages to its target location.
-        explicit Logger( std::shared_ptr<ILogger> logger );
+        explicit Logger( std::unique_ptr<ILogger> logger );
 
         /// @brief Destructor. Flushes the buffer and stops the processor thread.
         virtual ~Logger();
@@ -54,7 +54,7 @@ namespace Logging
         std::thread m_buffer_processor;
 
         /// @brief Logger that logs the messages.
-        std::shared_ptr<ILogger> m_target_logger;
+        std::unique_ptr<ILogger> m_target_logger;
 
         /// @brief Method for the m_buffer_processor.
         void processBuffer();

@@ -3,6 +3,7 @@
 #include "logger_base.hpp"
 
 #include <vector>
+#include <memory>
 
 namespace Logging
 {
@@ -16,7 +17,7 @@ namespace Logging
 
         /// @brief Add a new target log.
         /// @param log A log to log to.
-        void add( ILogger* log );
+        void add( std::unique_ptr<ILogger> log );
 
         void logError( std::string message, bool add_prefix ) override;
         void logWarning( std::string message, bool add_prefix ) override;
@@ -29,7 +30,7 @@ namespace Logging
         private:
 
         /// @brief Target loggers.
-        std::vector< ILogger* > m_loggers;
+        std::vector<std::unique_ptr<ILogger>> m_loggers;
 
         /// @brief Log message.
         /// @param level Log level.

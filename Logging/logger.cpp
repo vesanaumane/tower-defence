@@ -20,7 +20,7 @@ using namespace Logging;
 // auto console_logger = std::make_shared<ConsoleLogger>();
 // Logger log( console_logger );
 // Then the shared pointer still has two owners, console_logger and m_target_logger.
-Logging::Logger::Logger( std::shared_ptr<ILogger> logger )
+Logger::Logger( std::unique_ptr<ILogger> logger )
     : m_target_logger( std::move( logger ) )
 {
     // Create a thread that runs the processing method.
@@ -42,31 +42,31 @@ Logger::~Logger()
     m_buffer_processor.join();
 }
 
-void Logging::Logger::logError( std::string message, bool add_prefix )
+void Logger::logError( std::string message, bool add_prefix )
 {
     // Delegate.
     logMessage( LogLevel::Error, message, add_prefix );
 }
 
-void Logging::Logger::logWarning( std::string message, bool add_prefix )
+void Logger::logWarning( std::string message, bool add_prefix )
 {
     // Delegate.
     logMessage( LogLevel::Warning, message, add_prefix );
 }
 
-void Logging::Logger::logInfo( std::string message, bool add_prefix )
+void Logger::logInfo( std::string message, bool add_prefix )
 {
     // Delegate.
     logMessage( LogLevel::Info, message, add_prefix );
 }
 
-void Logging::Logger::logDebug( std::string message, bool add_prefix )
+void Logger::logDebug( std::string message, bool add_prefix )
 {
     // Delegate.
     logMessage( LogLevel::Debug, message, add_prefix );
 }
 
-void Logging::Logger::logVerbose( std::string message, bool add_prefix )
+void Logger::logVerbose( std::string message, bool add_prefix )
 {
     // Delegate.
     logMessage( LogLevel::Verbose, message, add_prefix );
