@@ -37,11 +37,9 @@ Logger::~Logger() noexcept
 {
     if( m_buffer_processor.joinable() )
     {
-        // Request stop for the thread.
+        // Request stop for the thread. TThis will also wake up the thread from wait
+        // in condition_variable_any.
         m_buffer_processor.request_stop();
-
-        // Wake from possible wait-sleep.
-        m_buffer_signal.notify_all();
     }
 }
 
@@ -94,10 +92,10 @@ void Logger::processBuffer( std::stop_token stop_token )
             // The thread exits the wait when notify_*() is called AND the predicative is true.
             // Note: the thread does not go to sleep if predicative is true.
             // I.e. State is checked BEFORE waiting and state is checked AFTER waking.
-            m_buffer_signal.wait( lock, [ this, &stop_token ]
+            m_buffer_signal.wait( lock, stop_token, [ this, &stop_token ]
                 {
-                    // Wake up when buffer has items, or shutdown is requested.
-                    return !m_buffer.empty() || !stop_token.stop_requested();
+                    // Wake up when buffer has items.
+                    return !m_buffer.empty();
                 } );
 
             // Shutdown condition.
