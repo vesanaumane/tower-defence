@@ -17,22 +17,29 @@ int main()
 
     LOG_INFO( "Application starting..." );
 
-    sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );
-    sf::CircleShape shape( 100.f );
-    shape.setFillColor( sf::Color::Green );
-
-    while( window.isOpen() )
+    try
     {
-        sf::Event event;
+        sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );
+        sf::CircleShape shape( 100.f );
+        shape.setFillColor( sf::Color::Green );
 
-        while( window.pollEvent( event ) )
+        while( window.isOpen() )
         {
-            if( event.type == sf::Event::Closed )
-                window.close();
+            sf::Event event;
+
+            while( window.pollEvent( event ) )
+            {
+                if( event.type == sf::Event::Closed )
+                    window.close();
+            }
+            window.clear();
+            window.draw( shape );
+            window.display();
         }
-        window.clear();
-        window.draw( shape );
-        window.display();
+    }
+    catch( const std::exception& e )
+    {
+        LOG_ERROR( e.what() );
     }
 
     LOG_INFO( "Application end." );
