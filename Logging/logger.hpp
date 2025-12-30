@@ -12,7 +12,7 @@
 
 namespace Logging
 {
-    /// @brief Singleton class for logging. This class has a buffer for messages to provide performance on burst logging situations.
+    /// @brief High performance Logger with concurrent logging and log message buffer support.
     class Logger : public ILogger
     {
         public:

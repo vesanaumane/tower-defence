@@ -1,22 +1,21 @@
 #include "Logging/console_logger.hpp"
 #include "Logging/multi_logger.hpp"
 #include "Logging/logger.hpp"
+#include "Logging/logging.hpp"
+#include "Logging/log_macros.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+void initializeLogging();
+
 int main()
 {
-    // Create a new console logger.
-    auto console_logger = std::make_unique<Logging::ConsoleLogger>( Logging::LogLevel::Info );
 
-    // Create a new multi logger with the console logger.
-    auto multi_logger = std::make_unique<Logging::MultiLogger>();
-    multi_logger->add( std::move( console_logger ) );
+    // Setup the logging.
+    initializeLogging();
 
-    // Create the main logger instance.
-    auto logger = std::make_unique<Logging::Logger>( std::move( multi_logger ) );
-    logger->logInfo( "First message", true );
+    LOG_INFO( "Application starting..." );
 
     sf::RenderWindow window( sf::VideoMode( { 200, 200 } ), "SFML works!" );
     sf::CircleShape shape( 100.f );
@@ -36,6 +35,26 @@ int main()
         window.display();
     }
 
-    logger->logInfo( "Other message", true );
+    LOG_INFO( "Application end." );
+
+    // Shutdown the logging service.
+    Logging::shutdown();
+
     return 0;
+}
+
+void initializeLogging()
+{
+    // Create a new console logger.
+    auto console_logger = std::make_unique<Logging::ConsoleLogger>( Logging::LogLevel::Info );
+
+    // Create a new multi logger with the console logger.
+    auto multi_logger = std::make_unique<Logging::MultiLogger>();
+    multi_logger->add( std::move( console_logger ) );
+
+    // Create the main logger instance.
+    auto logger = std::make_unique<Logging::Logger>( std::move( multi_logger ) );
+
+    // Initialize the service.
+    Logging::init( std::move( logger ) );
 }
