@@ -53,7 +53,6 @@ namespace Logging
         /// @brief Thread that processes the buffer, i.e. logs the messages.
         std::jthread m_buffer_processor;
 
-
         /// @brief Method for the m_buffer_processor.
         void processBuffer( std::stop_token stop_token );
 

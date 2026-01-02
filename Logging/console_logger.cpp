@@ -1,5 +1,6 @@
 #include "console_logger.hpp"
 #include <iostream>
+#include <mutex>
 
 using namespace Logging;
 
@@ -11,55 +12,61 @@ ConsoleLogger::ConsoleLogger( LogLevel maximum_log_level )
 
 void ConsoleLogger::logError( std::string message, bool add_prefix )
 {
-    // Add prefix to the message.
-    if( add_prefix )
-        prefixMessage( LogLevel::Error, message );
-
-    // Print to standard stream.
-    std::cout << message << std::endl;
+    // Delegate.
+    logMessage( std::cerr, ConsoleColor::Red, LogLevel::Error, message, add_prefix );
 }
 
 void ConsoleLogger::logWarning( std::string message, bool add_prefix )
 {
-    // Add prefix to the message.
-    if( add_prefix )
-        prefixMessage( LogLevel::Warning, message );
-
-    // Print to standard stream.
-    std::cout << message << std::endl;
+    // Delegate.
+    logMessage( std::cout, ConsoleColor::Yellow, LogLevel::Warning, message, add_prefix );
 }
 
 void ConsoleLogger::logInfo( std::string message, bool add_prefix )
 {
-    // Add prefix to the message.
-    if( add_prefix )
-        prefixMessage( LogLevel::Info, message );
-
-    // Print to standard stream.
-    std::cout << message << std::endl;
+    // Delegate.
+    logMessage( std::cout, ConsoleColor::Default, LogLevel::Info, message, add_prefix );
 }
 
 void ConsoleLogger::logDebug( std::string message, bool add_prefix )
 {
-    // Add prefix to the message.
-    if( add_prefix )
-        prefixMessage( LogLevel::Debug, message );
-
-    // Print to standard stream.
-    std::cout << message << std::endl;
+    // Delegate.
+    logMessage( std::cout, ConsoleColor::Cyan, LogLevel::Debug, message, add_prefix );
 }
 
 void ConsoleLogger::logVerbose( std::string message, bool add_prefix )
 {
-    // Add prefix to the message.
-    if( add_prefix )
-        prefixMessage( LogLevel::Verbose, message );
-
-    // Print to standard stream.
-    std::cout << message << std::endl;
+    // Delegate.
+    logMessage( std::cout, ConsoleColor::Grey, LogLevel::Verbose, message, add_prefix );
 }
 
 ConsoleLogger::~ConsoleLogger()
 {
     // Nothing to delete.
+}
+
+const char* ConsoleLogger::getConsoleTextColorANSIString( ConsoleColor color )
+{
+    switch( color )
+    {
+        case ConsoleColor::Red:    return "\033[31m";
+        case ConsoleColor::Cyan:   return "\033[36m";
+        case ConsoleColor::Yellow: return "\033[33m";
+        case ConsoleColor::Grey:   return "\033[90m";
+        default:                   return "\033[0m";
+    }
+}
+
+void ConsoleLogger::logMessage( std::ostream& stream, ConsoleColor text_color, LogLevel level, std::string message, bool add_prefix )
+{
+    // Add prefix if needed.
+    if( add_prefix )
+        prefixMessage( level, message );
+
+    // Log the message.
+    stream
+        << getConsoleTextColorANSIString( text_color )
+        << message
+        << getConsoleTextColorANSIString( ConsoleColor::Default ) // Reset to default.
+        << '\n'; // Not using std::endl as that is slower due to flushing.
 }

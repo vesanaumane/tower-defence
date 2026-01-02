@@ -16,6 +16,10 @@ int main()
     initializeLogging();
 
     LOG_INFO( "Application starting..." );
+    LOG_DEBUG( "Testing debug!" );
+    LOG_WARNING( "Testing warning!" );
+    LOG_VERBOSE( "Testing vebose!" );
+    LOG_ERROR( "Testing error!" );
 
     // Run the game.
     try
