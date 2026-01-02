@@ -47,4 +47,4 @@ There is also a script which will build and run:
 
 `./build_and_run.sh`
 
-The script also has an option to rebuild with option `-r`, just clean with `-c` and just building with `-r`. Rebuild and do not run: `-rb`.
+The script also has an option to rebuild with option `-r`, just clean with `-c` and just building with `-b`. Rebuild and do not run: `-rb`.
