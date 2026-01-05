@@ -1,4 +1,5 @@
 #include "Logging/console_logger.hpp"
+#include "Logging/file_logger.hpp"
 #include "Logging/multi_logger.hpp"
 #include "Logging/logger.hpp"
 #include "Logging/logging.hpp"
@@ -60,9 +61,17 @@ void initializeLogging()
     // Create a new console logger.
     auto console_logger = std::make_unique<Logging::ConsoleLogger>( Logging::LogLevel::Info );
 
-    // Create a new multi logger with the console logger.
+    // Create a new file logger for debug and higher level logging.
+    auto file_logger = std::make_unique<Logging::FileLogger>( Logging::LogLevel::Debug, "./logs/debug.log" );
+
+    // Create a new file logger for verbose logging.
+    auto file_logger_verbose = std::make_unique<Logging::FileLogger>( Logging::LogLevel::Verbose, "./logs/verbose.log" );
+
+    // Create a new multi logger with the loggers
     auto multi_logger = std::make_unique<Logging::MultiLogger>();
     multi_logger->add( std::move( console_logger ) );
+    multi_logger->add( std::move( file_logger ) );
+    multi_logger->add( std::move( file_logger_verbose ) );
 
     // Create the main logger instance.
     auto logger = std::make_unique<Logging::Logger>( std::move( multi_logger ) );

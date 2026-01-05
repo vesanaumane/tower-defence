@@ -16,7 +16,8 @@ SRCS = \
 	Logging/console_logger.cpp \
 	Logging/multi_logger.cpp \
 	Logging/logger.cpp \
-	Logging/logging.cpp
+	Logging/logging.cpp \
+	Logging/file_logger.cpp
 
 # Convert src paths to obj paths
 OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
