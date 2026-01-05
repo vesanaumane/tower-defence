@@ -1,21 +1,29 @@
 #include "file_logger.hpp"
 
 #include <string>
-#include <sys/stat.h>
 #include <stdexcept>
 #include <fstream>
 #include <filesystem>
 
 using namespace Logging;
 
-FileLogger::FileLogger( LogLevel maximum_log_level, std::string file_path )
+FileLogger::FileLogger( LogLevel maximum_log_level, const std::string& file_path )
     : LoggerBase( maximum_log_level )
 {
     // Create the directories for the file if those do not exist yet.
     std::filesystem::path path( file_path );
     if( path.has_parent_path() )
     {
-        std::filesystem::create_directories( path.parent_path() );
+        try
+        {
+            std::filesystem::create_directories( path.parent_path() );
+        }
+        catch( const std::filesystem::filesystem_error& e )
+        {
+            throw std::runtime_error(
+                "Failed to create log directory: " + path.parent_path().string()
+            );
+        }
     }
 
     // Open the file in append mode, this will create the file if it does not exist.
@@ -28,10 +36,10 @@ FileLogger::FileLogger( LogLevel maximum_log_level, std::string file_path )
     }
 
     // Log a header to the file to mark the starting time.
-    m_file << "**********************************\n"
-        << "*             Start              *\n"
-        << "*      " << getCurrentTimestamp() << "       *\n"
-        << "**********************************\n";
+    m_file << "****************************************\n"
+        << "*                Start\n"
+        << "*         " << getCurrentTimestamp() << "\n"
+        << "****************************************\n";
 }
 
 void FileLogger::logError( std::string message, bool add_prefix )
@@ -66,9 +74,7 @@ void FileLogger::logVerbose( std::string message, bool add_prefix )
 
 FileLogger::~FileLogger()
 {
-    // Close the file stream.
-    if( m_file && m_file.is_open() )
-        m_file.close();
+    // The file stream closes itself.
 }
 
 void FileLogger::logMessage( LogLevel level, std::string message, bool add_prefix )
@@ -83,4 +89,8 @@ void FileLogger::logMessage( LogLevel level, std::string message, bool add_prefi
 
     // Write the log.
     m_file << message << '\n';
+
+    // Flush on error messages for error messages to appear in log files faster.
+    if( level == LogLevel::Error )
+        m_file.flush();
 }
