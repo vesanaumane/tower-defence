@@ -58,6 +58,10 @@ const char* ConsoleLogger::getConsoleTextColorANSIString( ConsoleColor color )
 
 void ConsoleLogger::logMessage( std::ostream& stream, ConsoleColor text_color, LogLevel level, std::string message, bool add_prefix )
 {
+    // Check if the message should be logged at all based on the log level settings.
+    if( !shouldLog( level ) )
+        return;
+
     // Add prefix if needed.
     if( add_prefix )
         prefixMessage( level, message );

@@ -73,6 +73,10 @@ FileLogger::~FileLogger()
 
 void FileLogger::logMessage( LogLevel level, std::string message, bool add_prefix )
 {
+    // Check if the message should be logged at all based on the log level settings.
+    if( !shouldLog( level ) )
+        return;
+
     // Add prefix if wanted.
     if( add_prefix )
         prefixMessage( level, message );
