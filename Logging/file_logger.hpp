@@ -11,7 +11,7 @@ namespace Logging
     {
         public:
 
-        FileLogger( LogLevel maximum_log_level, std::string file_path );
+        FileLogger( LogLevel maximum_log_level, const std::string& file_path );
 
         void logError( std::string message, bool add_prefix ) override;
         void logWarning( std::string message, bool add_prefix ) override;
