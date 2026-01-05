@@ -4,8 +4,6 @@
 
 #include <iostream>
 #include <string>
-#include <map>
-#include <mutex>
 
 namespace Logging
 {

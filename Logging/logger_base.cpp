@@ -24,7 +24,7 @@ LoggerBase::~LoggerBase()
     // Nothing to do here.
 }
 
-void LoggerBase::prefixMessage( LogLevel level, std::string& message )
+std::string LoggerBase::getCurrentTimestamp()
 {
     // Get current time.
     auto now = std::chrono::system_clock::now();
@@ -36,16 +36,25 @@ void LoggerBase::prefixMessage( LogLevel level, std::string& message )
     }
 
     // Format tm into string using stringstream and put_time.
-    std::stringstream message_prefix;
-    message_prefix << "["
-        << std::put_time( utc_tm, "%Y-%m-%d %H:%M:%S" )
-        << "]";
-    if( message_prefix.fail() )
+    std::stringstream time_str;
+    time_str << std::put_time( utc_tm, "%Y-%m-%d %H:%M:%S" );
+    if( time_str.fail() )
     {
         throw std::runtime_error( "Failed to format time string" );
     }
 
-    // Add the message level part.
+    return time_str.str();
+}
+
+void LoggerBase::prefixMessage( LogLevel level, std::string& message )
+{
+    // Add timestamp to the prefix.
+    std::stringstream message_prefix;
+    message_prefix << "["
+        << getCurrentTimestamp()
+        << "]";
+
+    // Add the message level part to the prefix.
     switch( level )
     {
         case LogLevel::Info:
@@ -73,7 +82,7 @@ void LoggerBase::prefixMessage( LogLevel level, std::string& message )
             break;
     }
 
-    // Add dash to separate the prefix and the actual message.
+    // Add a dash to separate the prefix and the actual message.
     message_prefix << " - ";
 
     // Add the prefix to the message.

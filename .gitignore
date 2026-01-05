@@ -43,3 +43,7 @@ game
 
 # Visual studio code.
 .vscode/
+
+# logs
+logs/
+*.log

@@ -17,6 +17,10 @@ namespace Logging
 
         protected:
 
+        /// @brief Get the current time's time stamp.
+        /// @return Time now in format 
+        std::string getCurrentTimestamp();
+
         /// @brief Prefix log message with timestamp and log level information.
         /// @param level Logging level.
         /// @param message Message to which the prefix is added to.

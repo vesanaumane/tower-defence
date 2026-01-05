@@ -4,14 +4,22 @@
 #include <sys/stat.h>
 #include <stdexcept>
 #include <fstream>
+#include <filesystem>
 
 using namespace Logging;
 
 FileLogger::FileLogger( LogLevel maximum_log_level, std::string file_path )
-    : LoggerBase( maximum_log_level ),
-    m_file( file_path, std::ios::app )
+    : LoggerBase( maximum_log_level )
 {
-    // Check that the initialization succeeded.
+    // Create the directories for the file if those do not exist yet.
+    std::filesystem::path path( file_path );
+    if( path.has_parent_path() )
+    {
+        std::filesystem::create_directories( path.parent_path() );
+    }
+
+    // Open the file in append mode, this will create the file if it does not exist.
+    m_file.open( file_path, std::ios::app );
     if( !m_file.is_open() )
     {
         throw std::runtime_error(
@@ -22,7 +30,7 @@ FileLogger::FileLogger( LogLevel maximum_log_level, std::string file_path )
     // Log a header to the file to mark the starting time.
     m_file << "**********************************\n"
         << "*             Start              *\n"
-        << "*   " << getCurrentTimestamp() << "   *\n"
+        << "*      " << getCurrentTimestamp() << "       *\n"
         << "**********************************\n";
 }
 

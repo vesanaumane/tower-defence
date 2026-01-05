@@ -1,6 +1,5 @@
 #include "console_logger.hpp"
 #include <iostream>
-#include <mutex>
 
 using namespace Logging;
 
