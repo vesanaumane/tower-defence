@@ -7,6 +7,7 @@
 
 namespace Logging
 {
+    /// @brief Logs to a file. Note: This logger is not thread safe.
     class FileLogger : public LoggerBase
     {
         public:
