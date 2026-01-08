@@ -11,7 +11,7 @@ namespace Logging
     {
         public:
 
-        ConsoleLogger( LogLevel maximum_log_level );
+        explicit ConsoleLogger( LogLevel maximum_log_level );
 
         void logError( std::string message, bool add_prefix ) override;
         void logWarning( std::string message, bool add_prefix ) override;
