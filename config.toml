@@ -1,0 +1,30 @@
+#### Logging settings.
+[logging]
+
+# Logging levels:
+# 0 = Error
+# 1 = Warning
+# 2 = Info
+# 3 = Debug
+# 4 = Verbose
+
+# Logger types:
+# Console
+# File
+
+[[logging.loggers]]
+type = "Console"
+enabled = true
+max_logging_level = "Info"
+
+[[logging.loggers]]
+type = "File"
+enabled = true
+max_logging_level = "Debug"
+file_path = "logs/debug.log"
+
+[[logging.loggers]]
+type = "File"
+enabled = true
+max_logging_level = "Verbose"
+file_path = "logs/verbose.log"

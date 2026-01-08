@@ -7,7 +7,7 @@ OBJDIR   = obj
 CXX      = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -MMD -MP # Use C++/20 standard plus add more warnings and handle header file dependencies.
 LDLIBS  = -lsfml-graphics -lsfml-window -lsfml-system # Flags for SFML library, we need to link them to the app.
-INCLUDES = -ILogging
+INCLUDES = -ILogging -IConfiguration 
 
 # All source files
 SRCS = \
