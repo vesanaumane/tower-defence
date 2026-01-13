@@ -17,7 +17,8 @@ SRCS = \
 	Logging/multi_logger.cpp \
 	Logging/logger.cpp \
 	Logging/logging.cpp \
-	Logging/file_logger.cpp
+	Logging/file_logger.cpp \
+	Configuration/toml_config.cpp
 
 # Convert src paths to obj paths
 OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)

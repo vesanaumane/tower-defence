@@ -29,5 +29,10 @@ namespace Configuration
         toml::table m_config;
 
         void parseFile( const std::string& config_file_path );
+
+        toml::node_view<const toml::node> getNode( const std::string& key ) const;
+
+        template<typename T>
+        T getValueFromNode( toml::node_view<const toml::node> node, const std::string& key ) const;
     };
 }
