@@ -4,14 +4,19 @@
 #include "Logging/logger.hpp"
 #include "Logging/logging.hpp"
 #include "Logging/log_macros.hpp"
+#include "Configuration/configuration.hpp"
+#include "Configuration/toml_config.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+void initializeConfiguration();
 void initializeLogging();
 
 int main()
 {
+    // Setup configuration.
+    initializeConfiguration();
 
     // Setup the logging.
     initializeLogging();
@@ -21,6 +26,8 @@ int main()
     LOG_WARNING( "Testing warning!" );
     LOG_VERBOSE( "Testing vebose!" );
     LOG_ERROR( "Testing error!" );
+
+    LOG_INFO( Configuration::get().getString( "test.string" ) );
 
     // Run the game.
     try
@@ -54,6 +61,15 @@ int main()
     Logging::shutdown();
 
     return 0;
+}
+
+void initializeConfiguration()
+{
+    // Create new toml config reader.
+    auto toml_config = std::make_unique<Configuration::TomlConfig>( "config.toml" );
+
+    // Set it as a global config.
+    Configuration::init( std::move( toml_config ) );
 }
 
 void initializeLogging()

@@ -28,3 +28,6 @@ type = "File"
 enabled = true
 max_logging_level = "Verbose"
 file_path = "logs/verbose.log"
+
+[test]
+string = "teststring"

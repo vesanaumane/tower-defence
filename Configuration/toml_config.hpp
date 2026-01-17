@@ -8,7 +8,7 @@
 
 namespace Configuration
 {
-    class TomlConfig : IConfig
+    class TomlConfig : public IConfig
     {
         public:
 
