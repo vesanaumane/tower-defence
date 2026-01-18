@@ -7,7 +7,7 @@ OBJDIR   = obj
 CXX      = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -MMD -MP # Use C++/20 standard plus add more warnings and handle header file dependencies.
 LDLIBS  = -lsfml-graphics -lsfml-window -lsfml-system # Flags for SFML library, we need to link them to the app.
-INCLUDES = -ILogging -IConfiguration 
+INCLUDES = -ILogging -IConfiguration -IConfigNode
 
 # All source files
 SRCS = \
@@ -19,6 +19,7 @@ SRCS = \
 	Logging/logging.cpp \
 	Logging/file_logger.cpp \
 	Configuration/toml_config.cpp \
+	Configuration/toml_config_node.cpp \
 	Configuration/configuration.cpp
 
 # Convert src paths to obj paths

@@ -13,51 +13,57 @@ TomlConfig::TomlConfig( std::string config_file_path )
 {
     // Parse the toml-file.
     parseFile( m_config_file_path );
+
+    // Set the root node.
+    m_root_node = std::make_unique<TomlConfigNode>( toml::node_view<const toml::node>( m_config ) );
+}
+
+ConfigNodeType Configuration::TomlConfig::type() const
+{
+    return m_root_node->type();
 }
 
 bool TomlConfig::hasKey( const std::string& key ) const
 {
-    // at_path returns a node_view if the value exists or empty node if it does not.
-    // Node object has operator bool, so we want to cast it to it. It will be true
-    // if it is a non-empty node.
-    return static_cast< bool >( m_config.at_path( key ) );
+    return m_root_node->hasKey( key );
 }
 
 bool TomlConfig::getBoolean( const std::string& key ) const
 {
-    // Get the toml node from the config.
-    auto node = getNode( key );
-
-    // Get the value from the node.
-    return getValueFromNode<bool>( node, key );
+    return m_root_node->getBoolean( key );
 }
 
 float TomlConfig::getFloat( const std::string& key ) const
 {
-    // Get the toml node from the config.
-    auto node = getNode( key );
-
-    // Get the value from the node.
-    return getValueFromNode<float>( node, key );
+    return m_root_node->getFloat( key );
 }
 
 int TomlConfig::getInt( const std::string& key ) const
 {
-    // Get the toml node from the config.
-    auto node = getNode( key );
-
-    // Get the value from the node.
-    return getValueFromNode<int>( node, key );
+    return m_root_node->getInt( key );
 }
 
 std::string TomlConfig::getString( const std::string& key ) const
 {
-    // Get the toml node from the config.
-    auto node = getNode( key );
-
-    // Get the value from the node.
-    return getValueFromNode<std::string>( node, key );
+    return m_root_node->getString( key );
 }
+
+std::unique_ptr<IConfigNode> TomlConfig::getChildNode( const std::string& key ) const
+{
+    return m_root_node->getChildNode( key );
+}
+
+size_t TomlConfig::size() const
+{
+    return m_root_node->size();
+}
+
+std::unique_ptr<IConfigNode> TomlConfig::at( size_t index ) const
+{
+    return m_root_node->at( index );
+}
+
+TomlConfig::~TomlConfig() = default;
 
 void TomlConfig::parseFile( const std::string& config_file_path )
 {
@@ -71,35 +77,4 @@ void TomlConfig::parseFile( const std::string& config_file_path )
         std::string error_message = "Parsing config file \'" + config_file_path + "\' failed:\n" + err.what();
         throw ConfigError( error_message );
     }
-}
-
-toml::node_view<const toml::node> TomlConfig::getNode( const std::string& key ) const
-{
-    // Get the node by the key.
-    auto node = m_config.at_path( key );
-    if( !node )
-        throw ConfigKeyNotFound( key );
-
-    return node;
-}
-
-template<typename T>
-T TomlConfig::getValueFromNode( toml::node_view<const toml::node> node, const std::string& key ) const
-{
-    // Get the value from the node.
-    auto value = node.value<T>();
-
-    // Throw error if the value is not of correct type.
-    if( !value )
-    {
-        // Get the type of the node. We need to get it through stream.
-        std::ostringstream oss;
-        oss << node.type();
-
-        throw ConfigTypeMismatch(
-            key,
-            TypeName<T>::value,
-            oss.str() );
-    }
-    return *value;
 }
