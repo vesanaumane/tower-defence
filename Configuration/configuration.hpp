@@ -14,7 +14,7 @@ namespace Configuration
     /// Note: NEVER call this from global constructors or destructors. Can cause hard to debug issues and crashes due to initialization order.
     void shutdown();
 
-    /// @brief Get the global config.
+    /// @brief Get the global config. This is also the root node of the configuration.
     /// @return Global config.
     IConfig& get();
 }

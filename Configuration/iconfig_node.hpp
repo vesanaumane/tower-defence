@@ -37,30 +37,46 @@ namespace Configuration
         /// @brief Get the type of this node.
         virtual ConfigNodeType type() const = 0;
 
-        /// @brief Does the configuration have the key?
+        /// @brief Does the node have the key?
         /// @param key Value key, e.g. "window.height".
         /// @return True if has.
         virtual bool hasKey( const std::string& key ) const = 0;
 
-        /// @brief Get boolean value from the config.
+        /// @brief Get boolean value from the current node.
         /// @param key Value key, e.g. "window.height".
         /// @return The value, throws if key not found.
         virtual bool getBoolean( const std::string& key ) const = 0;
 
-        /// @brief Get float value from the config.
+        /// @brief Get float value from the current node.
         /// @param key Value key, e.g. "window.height".
         /// @return The value, throws if key not found.
         virtual float getFloat( const std::string& key ) const = 0;
 
-        /// @brief Get integer value from the config.
+        /// @brief Get integer value from the current node.
         /// @param key Value key, e.g. "window.height".
         /// @return The value, throws if key not found.
         virtual int getInt( const std::string& key ) const = 0;
 
-        /// @brief Get string value from the config.
+        /// @brief Get string value from the current node.
         /// @param key Value key, e.g. "window.height".
         /// @return The value, throws if key not found.
         virtual std::string getString( const std::string& key ) const = 0;
+
+        /// @brief Get current node as boolean value. Only for nodes of type Value.
+        /// @return The value, throws if node is of wrong type or the value type is not correct.
+        virtual bool asBoolean() const = 0;
+
+        /// @brief Get current node as float value. Only for nodes of type Value.
+        /// @return The value, throws if node is of wrong type or the value type is not correct.
+        virtual float asFloat() const = 0;
+
+        /// @brief Get current node as integer value. Only for nodes of type Value.
+        /// @return The value, throws if node is of wrong type or the value type is not correct.
+        virtual int asInt() const = 0;
+
+        /// @brief Get current node as string value. Only for nodes of type Value.
+        /// @return The value, throws if node is of wrong type or the value type is not correct.
+        virtual std::string asString() const = 0;
 
         /// @brief Get a child node.
         /// @param key Node key, e.g. "loggers"

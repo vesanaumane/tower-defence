@@ -36,7 +36,7 @@ namespace Configuration
         g_config.reset();
     }
 
-    IConfig& get()
+    IConfig& getRoot()
     {
         // Init must be called before getting the config.
         assert( g_config && "Configuration::get() called before init()" );

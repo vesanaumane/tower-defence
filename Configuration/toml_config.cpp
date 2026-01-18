@@ -48,6 +48,26 @@ std::string TomlConfig::getString( const std::string& key ) const
     return m_root_node->getString( key );
 }
 
+bool TomlConfig::asBoolean() const
+{
+    return m_root_node->asBoolean();
+}
+
+float TomlConfig::asFloat() const
+{
+    return m_root_node->asFloat();
+}
+
+int Configuration::TomlConfig::asInt() const
+{
+    return m_root_node->asInt();
+}
+
+std::string Configuration::TomlConfig::asString() const
+{
+    return m_root_node->asString();
+}
+
 std::unique_ptr<IConfigNode> TomlConfig::getChildNode( const std::string& key ) const
 {
     return m_root_node->getChildNode( key );

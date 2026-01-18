@@ -53,6 +53,30 @@ std::string TomlConfigNode::getString( const std::string& key ) const
     return getValueFromNode<std::string>( m_node, key );
 }
 
+bool Configuration::TomlConfigNode::asBoolean() const
+{
+    assertNodeTypeForValueConversion( "bool" );
+    return getValueFromNode<bool>( m_node, "" );
+}
+
+float Configuration::TomlConfigNode::asFloat() const
+{
+    assertNodeTypeForValueConversion( "float" );
+    return getValueFromNode<float>( m_node, "" );
+}
+
+int Configuration::TomlConfigNode::asInt() const
+{
+    assertNodeTypeForValueConversion( "integer" );
+    return getValueFromNode<int>( m_node, "" );
+}
+
+std::string Configuration::TomlConfigNode::asString() const
+{
+    assertNodeTypeForValueConversion( "string" );
+    return getValueFromNode<std::string>( m_node, "" );
+}
+
 std::unique_ptr<IConfigNode> TomlConfigNode::getChildNode( const std::string& key ) const
 {
     // Get the node by the key.
@@ -100,4 +124,13 @@ std::unique_ptr<IConfigNode> TomlConfigNode::at( size_t index ) const
 
     // Wrap it to TomlConfig.
     return std::make_unique<TomlConfigNode>( child );
+}
+
+void Configuration::TomlConfigNode::assertNodeTypeForValueConversion( const std::string& target_value_type ) const
+{
+    // Only valid node type for value conversions is Value.
+    if( type() != ConfigNodeType::Value )
+    {
+        throw ConfigError( "Cannot convert " + Configuration::typeToString( type() ) + " to " + target_value_type + "." );
+    }
 }
