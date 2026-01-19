@@ -2,35 +2,15 @@
 
 #include <string>
 #include <memory>
+
+#include "config_node_type.hpp"
 #include "config_error.hpp"
+#include "config_type_mismatch_error.hpp"
+#include "enum_traits.hpp"
+#include "enum_traits_all.hpp"
 
 namespace Configuration
 {
-    enum class ConfigNodeType
-    {
-        Value,
-        Array,
-        Object
-    };
-
-    /// @brief Method to have ConfigNode type as a string.
-    /// @param type Type.
-    /// @return Type as a string.
-    inline std::string typeToString( ConfigNodeType type )
-    {
-        switch( type )
-        {
-            case ConfigNodeType::Array:
-                return "Array";
-            case ConfigNodeType::Object:
-                return "Object";
-            case ConfigNodeType::Value:
-                return "Value";
-            default:
-                return "Unknown type";
-        }
-    };
-
     class IConfigNode
     {
         public:
@@ -94,6 +74,37 @@ namespace Configuration
         virtual IConfigNode& at( size_t index ) const = 0;
 
         virtual ~IConfigNode() {};
+
+        /// @brief Get enum value.
+        /// @tparam Enum 
+        /// @param key To find the value in this node.
+        /// @return Value as enum.
+        template<typename Enum>
+        Enum getEnum( const std::string& key ) const
+        {
+            // Make sure we are dealing with enums.
+            static_assert( std::is_enum_v<Enum>, "getEnum works only for enum types." );
+
+            // Get the value as string.
+            std::string value = getString( key );
+
+            // Find the mapping.
+            const auto& mapping = EnumTraits<Enum>::map();
+
+            // Check if the value is in the map.
+            auto map_it = mapping.find( value );
+            if( map_it == mapping.end() )
+            {
+                throw ConfigTypeMismatch(
+                    key,
+                    EnumTraits<Enum>::name,
+                    value
+                );
+            }
+
+            // Return the enum value.
+            return map_it->second;
+        }
 
         /// @brief Iterator support for array types.
         class Iterator

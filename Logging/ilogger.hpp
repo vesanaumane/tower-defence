@@ -2,18 +2,10 @@
 
 #include <string>
 
+#include "log_level.hpp"
+
 namespace Logging
 {
-    // Logging levels.
-    enum LogLevel
-    {
-        Error = 0,
-        Warning = 1,
-        Info = 2,
-        Debug = 3,
-        Verbose = 4
-    };
-
     // Interface for loggers.
     class ILogger
     {
