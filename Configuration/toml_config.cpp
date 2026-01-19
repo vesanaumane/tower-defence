@@ -68,7 +68,7 @@ std::string Configuration::TomlConfig::asString() const
     return m_root_node->asString();
 }
 
-std::unique_ptr<IConfigNode> TomlConfig::getChildNode( const std::string& key ) const
+IConfigNode& TomlConfig::getChildNode( const std::string& key ) const
 {
     return m_root_node->getChildNode( key );
 }
@@ -78,7 +78,7 @@ size_t TomlConfig::size() const
     return m_root_node->size();
 }
 
-std::unique_ptr<IConfigNode> TomlConfig::at( size_t index ) const
+IConfigNode& TomlConfig::at( size_t index ) const
 {
     return m_root_node->at( index );
 }

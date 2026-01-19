@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <string>
+#include <map>
+#include <unordered_map>
 
 #include "iconfig_node.hpp"
 #include "libs/toml.hpp"
@@ -27,15 +30,20 @@ namespace Configuration
         float asFloat() const override;
         int asInt() const override;
         std::string asString() const override;
-        virtual std::unique_ptr<IConfigNode> getChildNode( const std::string& key ) const override;
-        virtual size_t size() const override;
-        virtual std::unique_ptr<IConfigNode> at( size_t index ) const override;
+        IConfigNode& getChildNode( const std::string& key ) const override;
+        size_t size() const override;
+        IConfigNode& at( size_t index ) const override;
 
         private:
 
         /// @brief Toml node.
         toml::node_view<const toml::node> m_node;
 
+        /// @brief Cache for child nodes created in getChildNode -method.
+        mutable std::unordered_map<std::string, std::unique_ptr<TomlConfigNode>> m_children_cache;
+
+        /// @brief Cache for child nodes created in at -method.
+        mutable std::map<size_t, std::unique_ptr<TomlConfigNode>> m_array_cache;
 
         /// @brief Throw error if node type is not suitable for value conversions.
         /// @param target_value_type String representation for the target type of the value conversion.

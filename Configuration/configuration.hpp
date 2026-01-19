@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <memory>
 
 #include "iconfig.hpp"
@@ -17,4 +18,8 @@ namespace Configuration
     /// @brief Get the global config. This is also the root node of the configuration.
     /// @return Global config.
     IConfig& getRoot();
+
+    /// @brief Get a config node by the key.
+    /// @return The node.
+    IConfigNode& get( const std::string& key );
 }

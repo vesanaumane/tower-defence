@@ -81,7 +81,7 @@ namespace Configuration
         /// @brief Get a child node.
         /// @param key Node key, e.g. "loggers"
         /// @return Child node.
-        virtual std::unique_ptr<IConfigNode> getChildNode( const std::string& key ) const = 0;
+        virtual IConfigNode& getChildNode( const std::string& key ) const = 0;
 
         /// @brief If type is Array, the size of the Array.
         /// @return Array length.
@@ -90,7 +90,7 @@ namespace Configuration
         /// @brief If type is Array, access an item.
         /// @param index Item index.
         /// @return ConfigNode in the index.
-        virtual std::unique_ptr<IConfigNode> at( size_t index ) const = 0;
+        virtual IConfigNode& at( size_t index ) const = 0;
 
         virtual ~IConfigNode() {};
     };

@@ -39,10 +39,18 @@ namespace Configuration
     IConfig& getRoot()
     {
         // Init must be called before getting the config.
-        assert( g_config && "Configuration::get() called before init()" );
+        assert( g_config && "Configuration::getRoot() called before init()" );
 
         // Return a reference to the config.
         return *g_config;
+    }
+
+    IConfigNode& get( const std::string& key )
+    {
+        // Init must be called before getting the config.
+        assert( g_config && "Configuration::get( std::string ) called before init()" );
+
+        return g_config->getChildNode( key );
     }
 
 

@@ -1,4 +1,8 @@
 #include <memory>
+#include <string>
+#include <vector>
+#include <unordered_map>
+#include <map>
 
 #include "toml_config_node.hpp"
 #include "config_key_not_found_error.hpp"
@@ -77,15 +81,25 @@ std::string Configuration::TomlConfigNode::asString() const
     return getValueFromNode<std::string>( m_node, "" );
 }
 
-std::unique_ptr<IConfigNode> TomlConfigNode::getChildNode( const std::string& key ) const
+IConfigNode& TomlConfigNode::getChildNode( const std::string& key ) const
 {
+    // Check if this node is in the cache.
+    if( m_children_cache.contains( key ) )
+    {
+        return *m_children_cache.at( key );
+    }
+
     // Get the node by the key.
     auto node = m_node.at_path( key );
     if( !node )
         throw ConfigKeyNotFound( key );
 
     // Wrap it to TomlConfig.
-    return std::make_unique<TomlConfigNode>( node );
+    auto config_node = std::make_unique<TomlConfigNode>( node );
+
+    // Cache and return.
+    m_children_cache.emplace( key, std::move( config_node ) );
+    return *m_children_cache.at( key );
 }
 
 size_t TomlConfigNode::size() const
@@ -99,7 +113,7 @@ size_t TomlConfigNode::size() const
     return 0;
 }
 
-std::unique_ptr<IConfigNode> TomlConfigNode::at( size_t index ) const
+IConfigNode& TomlConfigNode::at( size_t index ) const
 {
     // At can only be called for arrays.
     if( type() != ConfigNodeType::Array )
@@ -117,13 +131,23 @@ std::unique_ptr<IConfigNode> TomlConfigNode::at( size_t index ) const
             + std::to_string( index ) );
     }
 
+    // Check if this index is in the cache.
+    if( m_array_cache.contains( index ) )
+    {
+        return *m_array_cache.at( index );
+    }
+
     // Get the toml node for the array item.
     auto child = toml::node_view<const toml::node>(
         m_node.as_array()->at( index )
     );
 
     // Wrap it to TomlConfig.
-    return std::make_unique<TomlConfigNode>( child );
+    auto config_node = std::make_unique<TomlConfigNode>( child );
+
+    // Cache and return.
+    m_array_cache.emplace( index, std::move( config_node ) );
+    return *m_array_cache.at( index );
 }
 
 void Configuration::TomlConfigNode::assertNodeTypeForValueConversion( const std::string& target_value_type ) const

@@ -26,9 +26,9 @@ namespace Configuration
         float asFloat() const override;
         int asInt() const override;
         std::string asString() const override;
-        virtual std::unique_ptr<IConfigNode> getChildNode( const std::string& key ) const override;
-        virtual size_t size() const override;
-        virtual std::unique_ptr<IConfigNode> at( size_t index ) const override;
+        IConfigNode& getChildNode( const std::string& key ) const override;
+        size_t size() const override;
+        IConfigNode& at( size_t index ) const override;
 
         ~TomlConfig() override;
 
