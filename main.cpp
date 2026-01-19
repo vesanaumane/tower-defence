@@ -6,6 +6,7 @@
 #include "Logging/log_macros.hpp"
 #include "Configuration/configuration.hpp"
 #include "Configuration/toml_config.hpp"
+#include "Configuration/config_error.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -27,8 +28,9 @@ int main()
     LOG_VERBOSE( "Testing vebose!" );
     LOG_ERROR( "Testing error!" );
 
-    LOG_INFO( Configuration::get().getString( "test.string" ) );
+    LOG_INFO( Configuration::get( "test.string" ).asString() );
 
+    /*
     // Run the game.
     try
     {
@@ -54,11 +56,14 @@ int main()
     {
         LOG_ERROR( e.what() );
     }
-
+    */
     LOG_INFO( "Application end." );
 
     // Shutdown the logging service.
     Logging::shutdown();
+
+    // Shutdown config service.
+    Configuration::shutdown();
 
     return 0;
 }
@@ -74,20 +79,38 @@ void initializeConfiguration()
 
 void initializeLogging()
 {
-    // Create a new console logger.
-    auto console_logger = std::make_unique<Logging::ConsoleLogger>( Logging::LogLevel::Info );
+    // Get the logging settings.
+    auto& loggers = Configuration::get( "logging.loggers" );
 
-    // Create a new file logger for debug and higher level logging.
-    auto file_logger = std::make_unique<Logging::FileLogger>( Logging::LogLevel::Debug, "./logs/debug.log" );
-
-    // Create a new file logger for verbose logging.
-    auto file_logger_verbose = std::make_unique<Logging::FileLogger>( Logging::LogLevel::Verbose, "./logs/verbose.log" );
-
-    // Create a new multi logger with the loggers
+    // Create a multi logger.
     auto multi_logger = std::make_unique<Logging::MultiLogger>();
-    multi_logger->add( std::move( console_logger ) );
-    multi_logger->add( std::move( file_logger ) );
-    multi_logger->add( std::move( file_logger_verbose ) );
+
+    // Configure all loggers in the config to the multi-logger.
+    for( const auto& logger : loggers )
+    {
+        // Get the logger type from the config.
+        std::string logger_type = logger.getString( "type" );
+
+        // Get the logging level.
+        Logging::LogLevel level = logger.getEnum<Logging::LogLevel>( "max_logging_level" );
+
+        // Create a correct logger.
+        if( logger_type == "File" )
+        {
+            // Get the file path.
+            std::string file_path = logger.getString( "file_path" );
+
+            // Create a new file logger to the multi logger.
+            multi_logger->add( std::make_unique<Logging::FileLogger>( level, file_path ) );
+        }
+        else if( logger_type == "Console" )
+        {
+            // Create new console logger to the multi logger.
+            multi_logger->add( std::make_unique<Logging::ConsoleLogger>( level ) );
+        }
+        else
+            throw Configuration::ConfigError( "Unknown logger type: " + logger_type );
+    }
 
     // Create the main logger instance.
     auto logger = std::make_unique<Logging::Logger>( std::move( multi_logger ) );
