@@ -1,6 +1,8 @@
 #### Logging settings.
 [logging]
 
+enabled = true
+
 # Logging levels:
 # 0 = Error
 # 1 = Warning
@@ -25,7 +27,7 @@ file_path = "logs/debug.log"
 
 [[logging.loggers]]
 type = "File"
-enabled = true
+enabled = false
 max_logging_level = "Verbose"
 file_path = "logs/verbose.log"
 

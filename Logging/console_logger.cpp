@@ -3,8 +3,8 @@
 
 using namespace Logging;
 
-ConsoleLogger::ConsoleLogger( LogLevel maximum_log_level )
-    : LoggerBase( maximum_log_level )
+ConsoleLogger::ConsoleLogger( LogLevel maximum_log_level, bool enabled )
+    : LoggerBase( maximum_log_level, enabled )
 {
     // Nothing to do here.
 }

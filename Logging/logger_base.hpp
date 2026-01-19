@@ -6,12 +6,15 @@
 
 namespace Logging
 {
+    // Abstract base class for loggers.
     class LoggerBase : public ILogger
     {
         public:
 
         LoggerBase();
-        LoggerBase( LogLevel maximum_log_level );
+        LoggerBase( LogLevel maximum_log_level, bool enabled );
+        virtual void setEnabled( bool enabled ) override;
+        virtual bool isEnabled() override;
 
         virtual ~LoggerBase();
 
@@ -32,6 +35,10 @@ namespace Logging
 
         private:
 
+        /// @brief Enabled state.
+        bool m_enabled;
+
+        /// @brief Maximum logging level for this logger.
         LogLevel m_max_level;
     };
 } // namespace Logging

@@ -7,39 +7,11 @@
 
 using namespace Logging;
 
-FileLogger::FileLogger( LogLevel maximum_log_level, const std::string& file_path )
-    : LoggerBase( maximum_log_level )
+FileLogger::FileLogger( LogLevel maximum_log_level, bool enabled, const std::string& file_path )
+    : LoggerBase( maximum_log_level, enabled ), m_file_path( file_path ), m_initialized( false )
 {
-    // Create the directories for the file if those do not exist yet.
-    std::filesystem::path path( file_path );
-    if( path.has_parent_path() )
-    {
-        try
-        {
-            std::filesystem::create_directories( path.parent_path() );
-        }
-        catch( const std::filesystem::filesystem_error& e )
-        {
-            throw std::runtime_error(
-                "Failed to create log directory: " + path.parent_path().string()
-            );
-        }
-    }
-
-    // Open the file in append mode, this will create the file if it does not exist.
-    m_file.open( file_path, std::ios::app );
-    if( !m_file.is_open() )
-    {
-        throw std::runtime_error(
-            "Failed to open log file: " + file_path
-        );
-    }
-
-    // Log a header to the file to mark the starting time.
-    m_file << "****************************************\n"
-        << "*                Start\n"
-        << "*         " << getCurrentTimestamp() << "\n"
-        << "****************************************\n";
+    if( isEnabled() )
+        initialize();
 }
 
 void FileLogger::logError( std::string message, bool add_prefix )
@@ -77,11 +49,55 @@ FileLogger::~FileLogger()
     // The file stream closes itself.
 }
 
+void Logging::FileLogger::initialize()
+{
+    // No need to initialize twice.
+    if( m_initialized )
+        return;
+
+    // Create the directories for the file if those do not exist yet.
+    std::filesystem::path path( m_file_path );
+    if( path.has_parent_path() )
+    {
+        try
+        {
+            std::filesystem::create_directories( path.parent_path() );
+        }
+        catch( const std::filesystem::filesystem_error& e )
+        {
+            throw std::runtime_error(
+                "Failed to create log directory: " + path.parent_path().string()
+            );
+        }
+    }
+
+    // Open the file in append mode, this will create the file if it does not exist.
+    m_file.open( m_file_path, std::ios::app );
+    if( !m_file.is_open() )
+    {
+        throw std::runtime_error(
+            "Failed to open log file: " + m_file_path
+        );
+    }
+
+    // Log a header to the file to mark the starting time.
+    m_file << "****************************************\n"
+        << "*                Start\n"
+        << "*         " << getCurrentTimestamp() << "\n"
+        << "****************************************\n";
+
+    m_initialized = true;
+}
+
 void FileLogger::logMessage( LogLevel level, std::string message, bool add_prefix )
 {
     // Check if the message should be logged at all based on the log level settings.
     if( !shouldLog( level ) )
         return;
+
+    // Initialize the log file if not yet done.
+    if( !m_initialized )
+        initialize();
 
     // Add prefix if wanted.
     if( add_prefix )

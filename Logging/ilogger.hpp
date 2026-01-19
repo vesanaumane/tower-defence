@@ -36,6 +36,14 @@ namespace Logging
         /// @param add_prefix Add prefix to the message. Prefix contains for example date and the log level.
         virtual void logVerbose( std::string message, bool add_prefix = true ) = 0;
 
+        /// @brief Set logging enabled.
+        /// @param enabled True to enable, false to stop logging.
+        virtual void setEnabled( bool enabled ) = 0;
+
+        /// @brief Is the logger enabled.
+        /// @return true if logger is enabled.
+        virtual bool isEnabled() = 0;
+
         virtual ~ILogger() {};
     };
 } // namespace Logging

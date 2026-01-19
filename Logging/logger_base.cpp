@@ -8,15 +8,26 @@ using namespace Logging;
 
 
 
-Logging::LoggerBase::LoggerBase()
+Logging::LoggerBase::LoggerBase() :
+    m_enabled( true ),
+    m_max_level( LogLevel::Verbose )
 {
-    // Set max log level to verbose.
-    m_max_level = LogLevel::Verbose;
 }
 
-Logging::LoggerBase::LoggerBase( LogLevel maximum_log_level )
+Logging::LoggerBase::LoggerBase( LogLevel maximum_log_level, bool enabled ) :
+    m_enabled( enabled ),
+    m_max_level( maximum_log_level )
 {
-    m_max_level = maximum_log_level;
+}
+
+void Logging::LoggerBase::setEnabled( bool enabled )
+{
+    m_enabled = enabled;
+}
+
+bool Logging::LoggerBase::isEnabled()
+{
+    return m_enabled;
 }
 
 LoggerBase::~LoggerBase()
@@ -91,5 +102,5 @@ void LoggerBase::prefixMessage( LogLevel level, std::string& message )
 
 bool LoggerBase::shouldLog( LogLevel log_level )
 {
-    return log_level <= m_max_level;
+    return m_enabled && log_level <= m_max_level;
 }

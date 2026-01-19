@@ -73,6 +73,16 @@ void Logger::logVerbose( std::string message, bool add_prefix )
     logMessage( LogLevel::Verbose, message, add_prefix );
 }
 
+void Logging::Logger::setEnabled( bool enabled )
+{
+    m_enabled = enabled;
+}
+
+bool Logging::Logger::isEnabled()
+{
+    return m_enabled;
+}
+
 
 void Logger::processBuffer( std::stop_token stop_token )
 {
@@ -117,6 +127,10 @@ void Logger::processBuffer( std::stop_token stop_token )
 
 void Logger::logMessage( LogLevel level, std::string message, bool add_prefix )
 {
+    // If the logging is disabled at this level, do not log.
+    if( !m_enabled )
+        return;
+
     // Add the message logging function to the buffer.
     addMessageToBuffer(
         [ this, level, msg = std::move( message ), add_prefix ] ()

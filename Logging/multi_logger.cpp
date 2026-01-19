@@ -47,6 +47,10 @@ void MultiLogger::logVerbose( std::string message, bool add_prefix )
 
 void MultiLogger::logMessage( LogLevel level, std::string& message, bool add_prefix )
 {
+    // Do not send the message to the child loggers if this logger is not enabled.
+    if( isEnabled() == false )
+        return;
+
     // Add prefix if wanted. We want to create the prefix here
     // so that every log has the same timestamp in the prefix.
     if( add_prefix )

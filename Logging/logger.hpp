@@ -29,6 +29,8 @@ namespace Logging
         void logInfo( std::string message, bool add_prefix ) override;
         void logDebug( std::string message, bool add_prefix ) override;
         void logVerbose( std::string message, bool add_prefix ) override;
+        void setEnabled( bool enabled ) override;
+        bool isEnabled() override;
 
         // Prevent copying and moving. Otherwise threading, mutexes and such might get mixed.
         Logger( const Logger& ) = delete;
@@ -37,6 +39,9 @@ namespace Logging
         Logger& operator=( Logger&& ) = delete;
 
         private:
+
+        /// @brief Enabled state.
+        bool m_enabled;
 
         /// @brief Logger that logs the messages.
         std::unique_ptr<ILogger> m_target_logger;

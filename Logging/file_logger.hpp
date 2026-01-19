@@ -12,7 +12,7 @@ namespace Logging
     {
         public:
 
-        FileLogger( LogLevel maximum_log_level, const std::string& file_path );
+        FileLogger( LogLevel maximum_log_level, bool enabled, const std::string& file_path );
 
         void logError( std::string message, bool add_prefix ) override;
         void logWarning( std::string message, bool add_prefix ) override;
@@ -24,8 +24,17 @@ namespace Logging
 
         private:
 
+        /// @brief Log file path.
+        const std::string m_file_path;
+
         /// @brief Log file stream.
         std::ofstream m_file;
+
+        /// @brief Has the file been initialized.
+        bool m_initialized;
+
+        /// @brief Initialize the log file.
+        void initialize();
 
         /// @brief Log a message to a file.
         /// @param level Logging level.

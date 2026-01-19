@@ -94,6 +94,9 @@ void initializeLogging()
         // Get the logging level.
         Logging::LogLevel level = logger.getEnum<Logging::LogLevel>( "max_logging_level" );
 
+        // Get if the logger should be enabled.
+        bool enabled = logger.getBoolean( "enabled" );
+
         // Create a correct logger.
         if( logger_type == "File" )
         {
@@ -101,12 +104,12 @@ void initializeLogging()
             std::string file_path = logger.getString( "file_path" );
 
             // Create a new file logger to the multi logger.
-            multi_logger->add( std::make_unique<Logging::FileLogger>( level, file_path ) );
+            multi_logger->add( std::make_unique<Logging::FileLogger>( level, enabled, file_path ) );
         }
         else if( logger_type == "Console" )
         {
             // Create new console logger to the multi logger.
-            multi_logger->add( std::make_unique<Logging::ConsoleLogger>( level ) );
+            multi_logger->add( std::make_unique<Logging::ConsoleLogger>( level, enabled ) );
         }
         else
             throw Configuration::ConfigError( "Unknown logger type: " + logger_type );
@@ -115,6 +118,11 @@ void initializeLogging()
     // Create the main logger instance.
     auto logger = std::make_unique<Logging::Logger>( std::move( multi_logger ) );
 
+    // Set logger enabled state.
+    logger->setEnabled( Configuration::get( "logging.enabled" ).asBoolean() );
+
     // Initialize the service.
     Logging::init( std::move( logger ) );
+
+    LOG_INFO( "test Loggers setup" );
 }
