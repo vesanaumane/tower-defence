@@ -19,7 +19,7 @@ namespace Configuration
     /// @return Global config.
     IConfig& getRoot();
 
-    /// @brief Get a config node by the key.
+    /// @brief Get a config node by the key. If key is empty, return root node.
     /// @return The node.
     IConfigNode& get( const std::string& key );
 }

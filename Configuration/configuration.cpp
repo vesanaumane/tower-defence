@@ -50,6 +50,11 @@ namespace Configuration
         // Init must be called before getting the config.
         assert( g_config && "Configuration::get( std::string ) called before init()" );
 
+        // Return root if calling get with empty key.
+        if( key == "" )
+            return getRoot();
+
+        // Delegate.
         return g_config->getChildNode( key );
     }
 

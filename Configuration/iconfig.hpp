@@ -7,16 +7,10 @@
 
 namespace Configuration
 {
-    /// @brief Config is the parent node of the whole config.
+    /// @brief Config is the root node of the whole config.
     class IConfig : public IConfigNode
     {
         public:
-
-        /// @brief Get a child node by the key.
-        /// @param key Key.
-        /// @return Child node.
-        //virtual const IConfigNode& operator[]( const std::string& key ) const = 0;
-
         virtual ~IConfig() {};
     };
 }
