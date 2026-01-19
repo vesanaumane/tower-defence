@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include "config_error.hpp"
 
 namespace Configuration
 {
@@ -93,5 +94,46 @@ namespace Configuration
         virtual IConfigNode& at( size_t index ) const = 0;
 
         virtual ~IConfigNode() {};
+
+        /// @brief Iterator support for array types.
+        class Iterator
+        {
+            public:
+            Iterator( const IConfigNode& node, size_t index ) : m_node( node ), m_index( index ) {}
+
+            IConfigNode& operator*() const { return m_node.at( m_index ); }
+            Iterator& operator++()
+            {
+                ++m_index;
+                return *this;
+            }
+
+            bool operator!=( const Iterator& other ) const { return m_index != other.m_index; }
+
+            private:
+            const IConfigNode& m_node;
+            size_t m_index;
+        };
+
+        /// @brief Begin iterator.
+        /// @return Iterator pointing to the first item of the array.
+        Iterator begin() const
+        {
+            if( type() != ConfigNodeType::Array )
+                throw ConfigError( "Cannot use iterators with node of type " + Configuration::typeToString( type() ) );
+
+            return Iterator( *this, 0 );
+        }
+
+        /// @brief End iterator.
+        /// @return Iterator pointing to the end of the array.
+        Iterator end() const
+        {
+            if( type() != ConfigNodeType::Array )
+                throw ConfigError( "Cannot use iterators with node of type " + Configuration::typeToString( type() ) );
+
+            return Iterator( *this, size() );
+        }
+
     };
 }
